@@ -41,6 +41,16 @@ Then, you can use this script to help you copy /usr/ports/devel/py-parsing to
 
 If there is other same port pr be found, it will provide you the pr link to check it.
 
+Check and send-pr
+-----------------
+
+You **MUST** check the diff of pkg-plist and pkg-plist.new, and then modify pkg-plist.new. And then::
+
+    # genplist commit
+    # genplist test
+    # genplist clean
+    # port submit
+
 Type less words?
 ----------------
 
