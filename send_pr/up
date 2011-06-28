@@ -1,0 +1,4 @@
+#!/bin/sh
+up.py $1 $2 $3 $4 $5
+DEST_DIR=${1/:/}
+cd '/usr/ports/'$DEST_DIR

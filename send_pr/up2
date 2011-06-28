@@ -1,0 +1,48 @@
+#!/bin/sh
+
+if ! test $# -eq 3
+then
+    echo 'Usage: . pu.sh <port_cat/port_name> <orig_version> <new_version>'
+    exit
+fi
+
+if [ ! -d "/usr/ports/$1" ]; then
+    echo $1 'not exists!!!'
+    exit
+fi
+
+PORT=$1
+ORIG_NUM=$2
+NEW_NUM=$3
+
+
+echo $PORT
+
+# check pr
+PR_RET=`${HOME}/bin/check_pr.py $PORT`
+echo $PR_RET
+
+if [ ! $PR_RET -eq 'True' ]; then
+    echo 'maybe have other PR, please check!'
+    exit
+fi
+
+cd /usr/ports/
+rm -rf $PORT.orig
+cp -rpf $PORT $PORT.orig
+cd /usr/ports/$PORT
+
+# check version
+VERSION_RET=`grep PORTVERSION Makefile` 
+echo $VERSION_RET
+
+sed -i .orig -e "s|$ORIG_NUM|$NEW_NUM|" Makefile
+make makesum
+genplist clean
+genplist create /tmp
+rm Makefile.orig
+if [ ! -f pkg-plist ]; then 
+    rm pkg-plist.new
+    genplist test
+    genplist clean
+fi
